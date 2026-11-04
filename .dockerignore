@@ -1,0 +1,12 @@
+node_modules
+packages/*/dist
+data
+web/dist
+.git
+.release-stage
+*.db
+*.log
+research
+scripts
+docs
+backup

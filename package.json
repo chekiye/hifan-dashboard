@@ -1,0 +1,28 @@
+{
+  "name": "hifan-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "以 TMDB 为基准的里番缺口看板",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @hifan/core && npm run build -w @hifan/matcher && npm run build -w @hifan/collector && npm run build -w @hifan/server",
+    "typecheck": "npm run typecheck -w @hifan/core && npm run typecheck -w @hifan/matcher && npm run typecheck -w @hifan/collector && npm run typecheck -w @hifan/server",
+    "start": "npm run start -w @hifan/server",
+    "collect": "npm run collect -w @hifan/collector",
+    "smoke": "npm run build && node --no-warnings scripts/smoke-test.mjs"
+  },
+  "dependencies": {
+    "opencc-js": "^1.4.2",
+    "undici": "^7.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

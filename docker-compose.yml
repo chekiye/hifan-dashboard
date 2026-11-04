@@ -1,0 +1,16 @@
+# 里番缺口看板（hifan-dashboard）
+# 拉起只需改 volumes 三行路径；代理/TMDB/Emby/CMS 全在看板「设置 → 系统设置」里配（保存即生效）
+services:
+  hifan-dashboard:
+    image: ghcr.io/chekiye/hifan-dashboard:latest
+    container_name: hifan-dashboard
+    restart: unless-stopped
+    ports:
+      - 8848:8848
+    volumes:
+      - ./data:/app/data                                # 数据库+图片（必须本地盘，⛔ 网络盘会锁坏 SQLite）
+      - /你的媒体库路径:/library                        # 改成你的媒体目录（rclone/FUSE 挂载只挂父目录）
+      - /你的下载盘路径:/downloads                       # 改成你的下载落盘目录（本地盘）
+    environment:
+      - TZ=Asia/Shanghai
+      - SCAN_LIBRARY_ROOT=/library/媒体目录             # 与上面 /library 挂载对应
