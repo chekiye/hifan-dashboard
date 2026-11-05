@@ -1,0 +1,27 @@
+# 里番缺口看板（hifan-dashboard）
+# 拉起只需改 volumes 里三行宿主路径。
+# 代理 / TMDB / Emby / CMS / 存储路径 / 下载开关 / 企微推送 / 登录认证
+# 全部在「看板 → 设置 → 系统设置」里配（9 组，每组带「测连接」）
+services:
+  hifan-dashboard:
+    image: ghcr.io/chekiye/hifan-dashboard:latest
+    container_name: hifan-dashboard
+    restart: unless-stopped
+    ports:
+      - 8848:8848
+    volumes:
+      - ./data:/app/data                                # 数据库+图片（必须本地盘，⛔ 网络盘会锁坏 SQLite）
+      - /你的媒体库路径:/library                        # 改成你的媒体目录（rclone/FUSE 挂载只挂父目录）
+      - /你的下载盘路径:/downloads                       # 改成你的下载落盘目录（本地盘）
+      # - /你的strm库路径:/strm:ro                       # 可选：CMS 生成的 strm 库，用于入库验收
+    environment:
+      - TZ=Asia/Shanghai
+      - SCAN_LIBRARY_ROOT=/library                      # 容器内扫描根；也可以在设置页「存储路径」改（改完需重启）
+    extra_hosts:
+      - "host.docker.internal:host-gateway"             # 容器里填 http://host.docker.internal:端口 访问宿主代理/Emby/CMS
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8848/api/health').then(r=>r.json()).then(j=>process.exit(j.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
